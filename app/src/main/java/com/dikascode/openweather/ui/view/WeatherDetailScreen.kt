@@ -1,5 +1,6 @@
 package com.dikascode.openweather.ui.view
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -12,15 +13,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dikascode.openweather.ui.view.components.WeatherCard
 import com.dikascode.openweather.ui.viewmodel.WeatherViewModel
+import com.google.gson.Gson
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherDetailScreen(navController: NavController, viewModel: WeatherViewModel) {
     val weatherState by viewModel.weatherState.collectAsState()
-
-    BackHandler {
-        navController.popBackStack()
-    }
+    val loadingState by viewModel.loadingState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -41,11 +40,13 @@ fun WeatherDetailScreen(navController: NavController, viewModel: WeatherViewMode
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
+
                 weatherState?.let { weather ->
                     WeatherCard(weather = weather)
                 } ?: run {
-                    Text(text = "Loading...", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "No information to display. Please try again with a valid city name.", style = MaterialTheme.typography.bodyLarge)
                 }
+
             }
         }
     )

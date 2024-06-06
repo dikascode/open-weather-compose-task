@@ -4,12 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dikascode.openweather.data.model.WeatherResponse
 import com.dikascode.openweather.data.repository.WeatherRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class WeatherViewModel : ViewModel() {
-    private val repository = WeatherRepository()
+@HiltViewModel
+class WeatherViewModel @Inject constructor(
+    private val repository: WeatherRepository
+) : ViewModel() {
     private val _weatherState = MutableStateFlow<WeatherResponse?>(null)
     val weatherState: StateFlow<WeatherResponse?> = _weatherState
     private val _errorState = MutableStateFlow<String?>(null)
@@ -21,7 +25,7 @@ class WeatherViewModel : ViewModel() {
         viewModelScope.launch {
             _loadingState.value = true
             try {
-                val response = repository.getWeather(city, "")
+                val response = repository.getWeather(city, "f58af07537a499690ecac246fae866a0")
                 _weatherState.value = response
                 _errorState.value = null
             } catch (e: Exception) {

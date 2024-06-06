@@ -20,42 +20,43 @@ fun WeatherCard(weather: WeatherResponse) {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = "City: ${weather.name ?: "N/A"}",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.align(Alignment.Start)
+                style = MaterialTheme.typography.headlineMedium
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = "Temperature: ${weather.main?.temp ?: "N/A"} °C",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.align(Alignment.Start)
+                style = MaterialTheme.typography.headlineSmall
             )
+
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Feels Like: ${weather.main?.feels_like ?: "N/A"} °C",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.align(Alignment.Start)
-            )
-            Text(
-                text = "Max Temp: ${weather.main?.temp_max ?: "N/A"} °C",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.align(Alignment.Start)
-            )
-            Text(
-                text = "Min Temp: ${weather.main?.temp_min ?: "N/A"} °C",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.align(Alignment.Start)
-            )
+
             weather.weather?.firstOrNull()?.let {
                 Text(
                     text = "Description: ${it.description ?: "N/A"}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.align(Alignment.Start)
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
+
+            Text(
+                text = "Feels like: ${weather.main?.feels_like ?: "N/A"} °C",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Text(
+                text = "Min Temperature: ${weather.main?.temp_min ?: "N/A"} °C",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Text(
+                text = "Max Temperature: ${weather.main?.temp_max ?: "N/A"} °C",
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }

@@ -2,6 +2,7 @@ package com.dikascode.openweather.ui.view
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,14 +36,17 @@ fun HomeScreen(navController: NavController, viewModel: WeatherViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
-            if (city.text.trim().isEmpty()) {
-                Toast.makeText(context, "Please enter a city name", Toast.LENGTH_SHORT).show()
-            } else {
-                fetchTriggered = true
-                viewModel.fetchWeather(city.text)
-            }
-        }) {
+        Button(
+            onClick = {
+                if (city.text.trim().isEmpty()) {
+                    Toast.makeText(context, "Please enter a city name", Toast.LENGTH_SHORT).show()
+                } else {
+                    fetchTriggered = true
+                    viewModel.fetchWeather(city.text)
+                }
+            },
+            shape = RoundedCornerShape(8.dp)
+        ) {
             Text("Get Weather")
         }
     }

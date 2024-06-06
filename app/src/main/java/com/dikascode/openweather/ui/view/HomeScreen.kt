@@ -18,6 +18,7 @@ fun HomeScreen(navController: NavController, viewModel: WeatherViewModel) {
     val context = LocalContext.current
     val weatherState by viewModel.weatherState.collectAsState()
     val errorState by viewModel.errorState.collectAsState()
+    var fetchTriggered by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -35,9 +36,10 @@ fun HomeScreen(navController: NavController, viewModel: WeatherViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            if (city.text.isEmpty()) {
+            if (city.text.trim().isEmpty()) {
                 Toast.makeText(context, "Please enter a city name", Toast.LENGTH_SHORT).show()
             } else {
+                fetchTriggered = true
                 viewModel.fetchWeather(city.text)
             }
         }) {
@@ -45,11 +47,17 @@ fun HomeScreen(navController: NavController, viewModel: WeatherViewModel) {
         }
     }
 
-    LaunchedEffect(weatherState, errorState) {
-        if (weatherState != null) {
-            navController.navigate("weatherDetail")
-        } else if (errorState != null) {
-            Toast.makeText(context, "Error: $errorState", Toast.LENGTH_SHORT).show()
+    LaunchedEffect(weatherState, errorState, fetchTriggered) {
+        if (fetchTriggered) {
+            if (weatherState != null) {
+                navController.navigate("weatherDetail") {
+                    popUpTo("home") { inclusive = false }
+                }
+                fetchTriggered = false
+            } else if (errorState != null) {
+                Toast.makeText(context, "Error: $errorState", Toast.LENGTH_LONG).show()
+                fetchTriggered = false
+            }
         }
     }
 }

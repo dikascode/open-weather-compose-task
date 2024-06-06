@@ -14,9 +14,12 @@ class WeatherViewModel : ViewModel() {
     val weatherState: StateFlow<WeatherResponse?> = _weatherState
     private val _errorState = MutableStateFlow<String?>(null)
     val errorState: StateFlow<String?> = _errorState
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState: StateFlow<Boolean> = _loadingState
 
     fun fetchWeather(city: String) {
         viewModelScope.launch {
+            _loadingState.value = true
             try {
                 val response = repository.getWeather(city, "")
                 _weatherState.value = response
@@ -24,6 +27,8 @@ class WeatherViewModel : ViewModel() {
             } catch (e: Exception) {
                 _weatherState.value = null
                 _errorState.value = e.message
+            } finally {
+                _loadingState.value = false
             }
         }
     }

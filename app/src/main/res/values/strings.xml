@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Open Weather Compose</string>
+    <string name="loading">Loading…</string>
+    <string name="get_weather">Get Weather Info</string>
+    <string name="enter_city_name">Enter city name</string>
+    <string name="favorite_city">favorite_city</string>
+    <string name="prefs">prefs</string>
+    <string name="favorite">Favorite</string>
+    <string name="weather_details">Weather Details</string>
+    <string name="splash">splash</string>
+    <string name="home">home</string>
+    <string name="weatherdetail">weatherDetail</string>
 </resources>

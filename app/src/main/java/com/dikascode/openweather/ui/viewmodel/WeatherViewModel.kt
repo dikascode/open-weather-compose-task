@@ -18,10 +18,16 @@ class WeatherViewModel @Inject constructor(
     private val _weatherState = MutableStateFlow<WeatherState>(WeatherState.Empty)
     val weatherState: StateFlow<WeatherState> = _weatherState
 
+    companion object {
+        const val API_KEY = "f58af07537a499690ecac246fae866a0"
+    }
+
     fun fetchWeather(city: String) {
         viewModelScope.launch {
             _weatherState.value = WeatherState.Loading
-            when (val result = repository.getWeather(city, "f58af07537a499690ecac246fae866a0")) {
+
+            //in a production environment this key won't be passed here leaving it as it is for test
+            when (val result = repository.getWeather(city, API_KEY)) {
                 is Result.Success -> {
                     _weatherState.value = WeatherState.Success(result.data)
                 }

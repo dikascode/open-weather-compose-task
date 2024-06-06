@@ -32,10 +32,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHost(navController = navController, startDestination = "splash") {
-                        composable("splash") { SplashScreen(navController) }
-                        composable("home") { HomeScreen(navController, viewModel) }
-                        composable("weatherDetail") { WeatherDetailScreen(navController, viewModel) }
+                    NavHost(navController = navController, startDestination = getString(R.string.splash)) {
+                        composable(getString(R.string.splash)) { SplashScreen(navController) }
+                        composable(getString(R.string.home)) { HomeScreen(navController, viewModel) }
+                        composable(getString(R.string.weatherdetail)) { WeatherDetailScreen(navController, viewModel) }
                     }
                 }
             }

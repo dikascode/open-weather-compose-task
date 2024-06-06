@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dikascode.openweather.ui.view.components.WeatherCard
+import com.dikascode.openweather.ui.viewmodel.WeatherState
 import com.dikascode.openweather.ui.viewmodel.WeatherViewModel
 import com.google.gson.Gson
 
@@ -19,7 +20,10 @@ import com.google.gson.Gson
 @Composable
 fun WeatherDetailScreen(navController: NavController, viewModel: WeatherViewModel) {
     val weatherState by viewModel.weatherState.collectAsState()
-    val loadingState by viewModel.loadingState.collectAsState()
+
+    BackHandler {
+        navController.popBackStack()
+    }
 
     Scaffold(
         topBar = {
@@ -40,13 +44,22 @@ fun WeatherDetailScreen(navController: NavController, viewModel: WeatherViewMode
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-
-                weatherState?.let { weather ->
-                    WeatherCard(weather = weather)
-                } ?: run {
-                    Text(text = "No information to display. Please try again with a valid city name.", style = MaterialTheme.typography.bodyLarge)
+                when (weatherState) {
+                    is WeatherState.Loading -> {
+//                        CircularProgressIndicator()
+                        Text("Loading...", style = MaterialTheme.typography.bodyLarge)
+                    }
+                    is WeatherState.Error -> {
+                        Text("Error: ${(weatherState as WeatherState.Error).message}", style = MaterialTheme.typography.bodyLarge)
+                    }
+                    is WeatherState.Empty -> {
+//                        Text("No data available", style = MaterialTheme.typography.bodyLarge)
+                    }
+                    is WeatherState.Success -> {
+                        Log.d("weather state 2", Gson().toJson(weatherState))
+                        WeatherCard(weather = (weatherState as WeatherState.Success).weather)
+                    }
                 }
-
             }
         }
     )

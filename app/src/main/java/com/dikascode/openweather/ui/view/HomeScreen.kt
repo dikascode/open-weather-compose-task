@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.dikascode.openweather.ui.viewmodel.WeatherState
 import com.dikascode.openweather.ui.viewmodel.WeatherViewModel
 
 @Composable
@@ -18,7 +19,6 @@ fun HomeScreen(navController: NavController, viewModel: WeatherViewModel) {
     var city by remember { mutableStateOf(TextFieldValue("")) }
     val context = LocalContext.current
     val weatherState by viewModel.weatherState.collectAsState()
-    val errorState by viewModel.errorState.collectAsState()
     var fetchTriggered by remember { mutableStateOf(false) }
 
     Column(
@@ -49,19 +49,38 @@ fun HomeScreen(navController: NavController, viewModel: WeatherViewModel) {
         ) {
             Text("Get Weather")
         }
+
+        when (weatherState) {
+            is WeatherState.Loading -> {
+                Spacer(modifier = Modifier.height(16.dp))
+//                CircularProgressIndicator()
+                Text("Loading...")
+            }
+            is WeatherState.Error -> {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Error: ${(weatherState as WeatherState.Error).message}")
+            }
+            is WeatherState.Empty -> {
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Text("No data available")
+            }
+            is WeatherState.Success -> {
+                if (fetchTriggered) {
+                    LaunchedEffect(Unit) {
+                        navController.navigate("weatherDetail") {
+                            popUpTo("home") { inclusive = false }
+                        }
+                        fetchTriggered = false
+                    }
+                }
+            }
+        }
     }
 
-    LaunchedEffect(weatherState, errorState, fetchTriggered) {
-        if (fetchTriggered) {
-            if (weatherState != null) {
-                navController.navigate("weatherDetail") {
-                    popUpTo("home") { inclusive = false }
-                }
-                fetchTriggered = false
-            } else if (errorState != null) {
-                Toast.makeText(context, "Error: $errorState", Toast.LENGTH_LONG).show()
-                fetchTriggered = false
-            }
+    LaunchedEffect(weatherState, fetchTriggered) {
+        if (fetchTriggered && weatherState is WeatherState.Error) {
+            Toast.makeText(context, "Error: ${(weatherState as WeatherState.Error).message}", Toast.LENGTH_LONG).show()
+            fetchTriggered = false
         }
     }
 }

@@ -10,11 +10,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.dikascode.openweather.ui.viewmodel.WeatherViewModel
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, viewModel: WeatherViewModel) {
     var city by remember { mutableStateOf(TextFieldValue("")) }
     val context = LocalContext.current
+    val weatherState by viewModel.weatherState.collectAsState()
+    val errorState by viewModel.errorState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -35,10 +38,18 @@ fun HomeScreen(navController: NavController) {
             if (city.text.isEmpty()) {
                 Toast.makeText(context, "Please enter a city name", Toast.LENGTH_SHORT).show()
             } else {
-                navController.navigate("weatherDetail")
+                viewModel.fetchWeather(city.text)
             }
         }) {
             Text("Get Weather")
+        }
+    }
+
+    LaunchedEffect(weatherState, errorState) {
+        if (weatherState != null) {
+            navController.navigate("weatherDetail")
+        } else if (errorState != null) {
+            Toast.makeText(context, "Error: $errorState", Toast.LENGTH_SHORT).show()
         }
     }
 }
